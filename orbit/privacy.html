@@ -106,8 +106,12 @@ write in it. The short version is: they stay on your phone.</p>
 <h2>What Orbit collects about you</h2>
 
 <p><strong>Nothing.</strong> Orbit has no analytics, no advertising, no
-tracking, no crash reporting and no advertising identifier. It does not know
-who you are, does not ask, and has no way to find out.</p>
+tracking and no advertising identifier. It does not know who you are, does not
+ask, and has no way to find out.</p>
+
+<p>There is one exception, it is technical rather than personal, and it is
+described in full further down under <em>Technical diagnostics</em>. It
+contains nothing you have written.</p>
 
 <h2>Where your information is kept</h2>
 
@@ -151,6 +155,31 @@ picture.</p>
   using recognition software bundled inside the app. The picture is not sent
   anywhere, and no internet connection is needed or used for it.</li>
 </ul>
+
+<h2>Technical diagnostics</h2>
+
+<p>The text-recognition feature is built on <strong>Google's ML Kit</strong>.
+The reading happens entirely on your phone, and <strong>your picture is never
+sent anywhere</strong> — but the library itself reports technical information
+back to Google, and we are telling you rather than leaving it out.</p>
+
+<p>What it sends:</p>
+
+<ul>
+  <li>Your phone's make, model and Android version</li>
+  <li>Orbit's package name and version number</li>
+  <li>How long a scan took, whether it worked, and any error code</li>
+  <li>A per-installation identifier, which Google states is not designed to
+  identify you or your device</li>
+</ul>
+
+<p><strong>It contains none of your notes, tasks or pictures</strong>, and no
+name, email or contact details. This is Google's own software running inside
+Orbit; there is no setting that turns it off, and rdotbytes never sees any of
+it. Google's description of it is published at
+<a href="https://developers.google.com/ml-kit/android-data-disclosure">developers.google.com/ml-kit/android-data-disclosure</a>.</p>
+
+<p>If you never use photo-to-text, this never runs.</p>
 
 <h2>Notifications</h2>
 
