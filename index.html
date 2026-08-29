@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>rdotbytes</title>
+<meta name="description" content="rdotbytes makes small, private apps for Android. Nothing you write leaves your phone.">
+<style>
+  :root {
+    --ink: #16161a;
+    --muted: #5b5b66;
+    --rule: #e3e3e8;
+    --page: #ffffff;
+    --card: #fafafc;
+    --accent: #6b4bd6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #ececf1;
+      --muted: #a2a2ad;
+      --rule: #2c2c33;
+      --page: #131316;
+      --card: #1a1a1f;
+      --accent: #a68cff;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--page);
+    color: var(--ink);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 72px 24px 96px;
+    -webkit-text-size-adjust: 100%;
+  }
+  main { max-width: 34rem; margin: 0 auto; }
+
+  h1 {
+    font-size: 2.4rem;
+    margin: 0 0 6px;
+    letter-spacing: -0.03em;
+    font-weight: 650;
+  }
+  .tagline { color: var(--muted); margin: 0 0 44px; font-size: 1.05rem; }
+
+  h2 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 600;
+    margin: 0 0 14px;
+  }
+
+  .app {
+    display: block;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    padding: 20px 22px;
+    text-decoration: none;
+    color: inherit;
+    margin-bottom: 12px;
+    transition: border-color 0.15s ease;
+  }
+  .app:hover { border-color: var(--accent); }
+  .app h3 { margin: 0 0 4px; font-size: 1.15rem; letter-spacing: -0.01em; }
+  .app p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+  .links { margin-top: 40px; }
+  .links a { color: var(--accent); }
+  .links p { margin: 0 0 8px; font-size: 0.95rem; }
+
+  footer {
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+<main>
+
+<h1>rdotbytes</h1>
+<p class="tagline">Small, private apps for Android.</p>
+
+<h2>Apps</h2>
+
+<a class="app" href="/orbit/privacy.html">
+  <h3>Orbit</h3>
+  <p>A calendar, tasks, notes and habits that live on your phone. No account,
+  no server, nothing sent anywhere.</p>
+</a>
+
+<div class="links">
+  <h2>Legal</h2>
+  <p><a href="/orbit/privacy.html">Orbit privacy policy</a></p>
+</div>
+
+<div class="links">
+  <h2>Contact</h2>
+  <p><a href="mailto:rdotbytes@gmail.com">rdotbytes@gmail.com</a></p>
+</div>
+
+<footer>
+  &copy; rdotbytes
+</footer>
+
+</main>
+</body>
+</html>
