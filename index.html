@@ -3,114 +3,1010 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>rdotbytes</title>
-<meta name="description" content="rdotbytes makes small, private apps for Android. Nothing you write leaves your phone.">
+<title>rdotbytes — small software, made to stay yours</title>
+<meta name="description" content="An independent studio building apps and games for Android. No accounts, no servers, nothing sent anywhere.">
+<meta name="theme-color" content="#0b0a09">
+<link rel="icon" href="assets/orbit/icon.png">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="rdotbytes — small software, made to stay yours">
+<meta property="og:description" content="An independent studio building apps and games for Android. No accounts, no servers, nothing sent anywhere.">
+<meta property="og:image" content="https://rdotbytes.github.io/assets/orbit/icon.png">
+<meta name="twitter:card" content="summary">
+
+<script>document.documentElement.className = 'js';</script>
+
 <style>
-  :root {
-    --ink: #16161a;
-    --muted: #5b5b66;
-    --rule: #e3e3e8;
-    --page: #ffffff;
-    --card: #fafafc;
-    --accent: #6b4bd6;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --ink: #ececf1;
-      --muted: #a2a2ad;
-      --rule: #2c2c33;
-      --page: #131316;
-      --card: #1a1a1f;
-      --accent: #a68cff;
-    }
-  }
+/* ---------------------------------------------------------------- fonts */
+@font-face {
+  font-family: 'Outfit';
+  src: url('assets/fonts/Outfit-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 
-  * { box-sizing: border-box; }
+/* ---------------------------------------------------------------- tokens */
+:root {
+  --bg:        #0b0a09;
+  --bg-lift:   #100e0c;
+  --ink:       #f5f0ea;
+  --ink-dim:   #a8a099;
+  --ink-faint: #6f6862;
 
-  body {
-    background: var(--page);
-    color: var(--ink);
-    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
-    margin: 0;
-    padding: 72px 24px 96px;
-    -webkit-text-size-adjust: 100%;
+  --line:      rgba(245, 240, 234, 0.10);
+  --line-soft: rgba(245, 240, 234, 0.055);
+  --surface:   rgba(245, 240, 234, 0.025);
+
+  --ember:     #e07a4a;
+  --gold:      #cba53f;
+  --pine:      #5f9b83;
+
+  --shell:     min(1180px, 100% - 3rem);
+  --display:   'Outfit', 'Segoe UI', system-ui, sans-serif;
+  --text:      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+               Helvetica, Arial, sans-serif;
+
+  --ease:      cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 17px/1.65 var(--text);
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+/* Ambient warmth: two very slow drifting fields of colour behind everything. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: -30vmax;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(38vmax 38vmax at 22% 14%, rgba(224, 122, 74, 0.16), transparent 62%),
+    radial-gradient(34vmax 34vmax at 82% 34%, rgba(203, 165, 63, 0.10), transparent 64%),
+    radial-gradient(40vmax 40vmax at 55% 92%, rgba(95, 155, 131, 0.10), transparent 66%);
+  animation: drift 44s var(--ease) infinite alternate;
+}
+
+/* A fine film of grain. Stops the flat black looking like a screenshot. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(3%, -4%, 0) scale(1.12); }
+}
+
+/* ---------------------------------------------------------------- shared */
+.shell { width: var(--shell); margin-inline: auto; }
+
+section { position: relative; padding: clamp(4.5rem, 9vh, 7rem) 0; }
+
+.rule { height: 1px; background: var(--line-soft); border: 0; margin: 0; }
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 1.6rem;
+}
+.label::before {
+  content: '';
+  width: 1.6rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+h1, h2, h3 {
+  font-family: var(--display);
+  font-weight: 500;
+  margin: 0;
+  text-wrap: balance;
+}
+
+a { color: inherit; }
+
+/* Links that draw their own underline on hover. */
+.ul {
+  position: relative;
+  text-decoration: none;
+  color: var(--ink);
+  padding-bottom: 2px;
+}
+.ul::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s var(--ease);
+}
+.ul:hover::after { transform: scaleX(1); transform-origin: left; }
+
+/* ---------------------------------------------------------------- nav */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  transition: background 0.4s var(--ease), border-color 0.4s var(--ease),
+              backdrop-filter 0.4s var(--ease);
+  border-bottom: 1px solid transparent;
+}
+.nav.is-stuck {
+  background: rgba(11, 10, 9, 0.72);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-bottom-color: var(--line-soft);
+}
+.nav .shell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4.5rem;
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.02rem;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  color: var(--ink);
+}
+.wordmark svg { width: 20px; height: 20px; overflow: visible; }
+.wordmark:hover .mk-orbit { animation-duration: 3s; }
+
+.nav-links {
+  display: flex;
+  gap: 1.9rem;
+  font-size: 0.86rem;
+  color: var(--ink-dim);
+}
+.nav-links a { text-decoration: none; transition: color 0.3s var(--ease); }
+.nav-links a:hover { color: var(--ink); }
+@media (max-width: 640px) { .nav-links a:nth-child(2) { display: none; } }
+
+/* ---------------------------------------------------------------- hero */
+.hero {
+  min-height: 92svh;
+  display: flex;
+  align-items: center;
+  padding-top: 4.5rem;
+}
+.hero .shell {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  padding: 0.45rem 0.95rem;
+  margin-bottom: 2rem;
+  background: var(--surface);
+}
+.eyebrow .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--ember);
+  box-shadow: 0 0 0 0 rgba(224, 122, 74, 0.6);
+  animation: pulse 2.8s ease-out infinite;
+}
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(224, 122, 74, 0.55); }
+  70%  { box-shadow: 0 0 0 9px rgba(224, 122, 74, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(224, 122, 74, 0); }
+}
+
+.hero h1 {
+  font-size: clamp(2.9rem, 7.4vw, 5.6rem);
+  line-height: 0.98;
+  letter-spacing: -0.038em;
+  font-weight: 500;
+  margin: 0 0 1.6rem;
+}
+.hero h1 .soft { color: var(--ink-dim); }
+
+.hero .lede {
+  font-size: clamp(1.02rem, 1.5vw, 1.2rem);
+  line-height: 1.6;
+  color: var(--ink-dim);
+  max-width: 34rem;
+  margin: 0 0 2.6rem;
+}
+
+.hero-actions { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none;
+  padding: 0.85rem 1.5rem;
+  border-radius: 100px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.4s var(--ease), transform 0.4s var(--ease);
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 160% at 50% 120%, rgba(224, 122, 74, 0.35), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
+}
+.btn:hover { border-color: rgba(224, 122, 74, 0.5); transform: translateY(-2px); }
+.btn:hover::before { opacity: 1; }
+.btn span { position: relative; }
+.btn .arw { position: relative; transition: transform 0.4s var(--ease); }
+.btn:hover .arw { transform: translateX(4px); }
+
+/* Word-by-word rise on load. Only ever hidden when JS is there to unhide it,
+   so the hero can never end up blank. */
+.rise { display: inline-block; overflow: hidden; vertical-align: bottom; }
+.js .rise > span {
+  display: inline-block;
+  transform: translateY(105%);
+  animation: riseUp 1.05s var(--ease) forwards;
+  animation-delay: calc(var(--i) * 0.085s + 0.15s);
+}
+@keyframes riseUp { to { transform: translateY(0); } }
+
+.js .fade-in {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: fadeUp 1s var(--ease) forwards;
+  animation-delay: calc(var(--i) * 0.1s + 0.55s);
+}
+@keyframes fadeUp { to { opacity: 1; transform: none; } }
+
+/* ------------------------------------------------------- the orbit mark */
+.mark {
+  justify-self: center;
+  width: min(100%, 400px);
+  aspect-ratio: 1;
+  position: relative;
+}
+.mark svg { width: 100%; height: 100%; overflow: visible; }
+.mk-ring { fill: none; stroke: var(--line); stroke-width: 1; }
+.mk-orbit { transform-origin: 100px 100px; animation: spin linear infinite; }
+.mk-orbit.a { animation-duration: 26s; }
+.mk-orbit.b { animation-duration: 40s; animation-direction: reverse; }
+.mk-orbit.c { animation-duration: 58s; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.mk-core {
+  transform-origin: 100px 100px;
+  animation: breathe 6s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.06); }
+}
+
+.mark .glow {
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(224, 122, 74, 0.20), transparent 68%);
+  filter: blur(28px);
+  animation: breathe 6s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------------- ethos */
+.ethos { padding-top: 0; }
+.ethos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line-soft);
+  border: 1px solid var(--line-soft);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.ethos-item {
+  background: var(--bg);
+  padding: 2.6rem 2rem 2.8rem;
+  position: relative;
+  transition: background 0.5s var(--ease);
+}
+.ethos-item:hover { background: var(--bg-lift); }
+.ethos-item .no {
+  font-family: var(--display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--ember);
+  display: block;
+  margin-bottom: 1.3rem;
+}
+.ethos-item h3 {
+  font-size: 1.45rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.7rem;
+}
+.ethos-item p { margin: 0; color: var(--ink-dim); font-size: 0.97rem; line-height: 1.6; }
+
+/* ---------------------------------------------------------------- work */
+.work-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 3.5rem;
+}
+.work-head h2 {
+  font-size: clamp(2rem, 4.4vw, 3.4rem);
+  letter-spacing: -0.032em;
+  line-height: 1.05;
+  max-width: 18ch;
+}
+.count { font-size: 0.82rem; color: var(--ink-faint); white-space: nowrap; padding-bottom: 0.5rem; }
+
+.showcase {
+  border: 1px solid var(--line-soft);
+  border-radius: 26px;
+  background:
+    linear-gradient(160deg, rgba(245, 240, 234, 0.035), rgba(245, 240, 234, 0) 46%);
+  padding: clamp(1.8rem, 4vw, 3.4rem);
+  display: grid;
+  grid-template-columns: 1fr 0.78fr;
+  grid-template-areas:
+    "head stage"
+    "body stage";
+  gap: 0 clamp(2rem, 5vw, 4.5rem);
+  align-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.sc-head  { grid-area: head; align-self: end; }
+.sc-body  { grid-area: body; align-self: start; }
+.stage    { grid-area: stage; align-self: center; }
+.showcase::before {
+  content: '';
+  position: absolute;
+  width: 60%;
+  aspect-ratio: 1;
+  right: -12%;
+  top: -30%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(224, 122, 74, 0.13), transparent 65%);
+  pointer-events: none;
+}
+
+.app-id { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.4rem; }
+.app-id img {
+  width: 54px; height: 54px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+}
+.app-id h3 { font-size: 1.9rem; letter-spacing: -0.028em; line-height: 1; }
+.app-id .kind {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-top: 0.35rem;
+  display: block;
+}
+
+.showcase .pitch {
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  font-family: var(--display);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  margin: 0 0 2.2rem;
+  color: var(--ink);
+  max-width: 24ch;
+}
+
+/* The feature switcher — hover or tap a row, the phone changes. */
+.feats { list-style: none; margin: 0 0 2.4rem; padding: 0; }
+.feat {
+  position: relative;
+  border-top: 1px solid var(--line-soft);
+  cursor: pointer;
+}
+.feat:last-child { border-bottom: 1px solid var(--line-soft); }
+.feat button {
+  all: unset;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.95rem 0.4rem 0.95rem 1.1rem;
+  cursor: pointer;
+}
+.feat button:focus-visible { outline: 1px solid var(--ember); outline-offset: -2px; }
+.feat .ft {
+  font-family: var(--display);
+  font-size: 1.06rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink-dim);
+  transition: color 0.4s var(--ease);
+  display: block;
+}
+.feat .fd {
+  display: block;
+  font-size: 0.93rem;
+  line-height: 1.55;
+  color: var(--ink-faint);
+  max-width: 40ch;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.55s var(--ease), opacity 0.45s var(--ease),
+              margin-top 0.55s var(--ease);
+}
+/* The live bar down the left of the active row. */
+.feat::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0;
+  width: 2px;
+  height: 100%;
+  background: var(--ember);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.5s var(--ease);
+}
+.feat.on::before { transform: scaleY(1); }
+.feat.on .ft { color: var(--ink); }
+.feat.on .fd { max-height: 6rem; opacity: 1; margin-top: 0.4rem; }
+.feat:hover .ft { color: var(--ink); }
+
+.store {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.86rem;
+  color: var(--ink-dim);
+  border: 1px dashed var(--line);
+  border-radius: 100px;
+  padding: 0.7rem 1.25rem;
+}
+.store .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+
+/* ------------------------------------------------------------- the phone */
+.stage {
+  perspective: 1400px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+/* A warm pool of light for the phone to sit in. */
+.stage::before {
+  content: '';
+  position: absolute;
+  inset: -14% -22%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(224, 122, 74, 0.22), transparent 72%);
+  filter: blur(38px);
+  pointer-events: none;
+}
+.phone {
+  position: relative;
+  width: min(100%, 344px);
+  border-radius: 28px;
+  padding: 9px;
+  background: linear-gradient(150deg, #34302c, #131110 42%, #26221f);
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.06) inset,
+    0 40px 80px -30px rgba(0, 0, 0, 0.9),
+    0 0 0 1px rgba(0, 0, 0, 0.6);
+  transform-style: preserve-3d;
+  transition: transform 0.7s var(--ease);
+  will-change: transform;
+}
+/* The aspect sits on the screen, not the body, so the shots are never cropped. */
+.screen {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 440 / 740;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #16130f;
+}
+.screen img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 0.7s var(--ease), transform 0.9s var(--ease);
+}
+.screen img.on { opacity: 1; transform: none; }
+
+/* Specular sheen across the glass. */
+.phone::after {
+  content: '';
+  position: absolute;
+  inset: 9px;
+  border-radius: 20px;
+  pointer-events: none;
+  background: linear-gradient(118deg, rgba(255, 255, 255, 0.13) 0%,
+              rgba(255, 255, 255, 0) 34%, rgba(255, 255, 255, 0) 66%,
+              rgba(255, 255, 255, 0.05) 100%);
+}
+
+/* ---------------------------------------------------------------- games */
+.next {
+  border: 1px solid var(--line-soft);
+  border-radius: 26px;
+  padding: clamp(2.4rem, 6vw, 4.5rem);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(135deg, var(--line-soft) 0 1px, transparent 1px 14px);
+}
+.next-inner { position: relative; }
+.next h3 {
+  font-size: clamp(1.7rem, 3.6vw, 2.6rem);
+  letter-spacing: -0.03em;
+  margin-bottom: 0.9rem;
+}
+.next p { color: var(--ink-dim); margin: 0 auto; max-width: 46ch; }
+.next .tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid rgba(203, 165, 63, 0.3);
+  border-radius: 100px;
+  padding: 0.35rem 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ---------------------------------------------------------------- foot */
+.contact h2 {
+  font-size: clamp(2.2rem, 6vw, 4.4rem);
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  margin-bottom: 2rem;
+}
+.mail {
+  font-family: var(--display);
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  color: var(--ember);
+}
+
+footer { border-top: 1px solid var(--line-soft); padding: 2.4rem 0 3rem; }
+footer .shell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.84rem;
+  color: var(--ink-faint);
+}
+footer a { text-decoration: none; transition: color 0.3s var(--ease); }
+footer a:hover { color: var(--ink); }
+.foot-links { display: flex; gap: 1.6rem; }
+
+/* ------------------------------------------------------- scroll reveals */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+  transition-delay: calc(var(--i, 0) * 0.09s);
+}
+.js [data-reveal].seen { opacity: 1; transform: none; }
+
+/* ---------------------------------------------------------------- small */
+@media (max-width: 900px) {
+  :root { --shell: min(1180px, 100% - 2.4rem); }
+  .hero .shell { grid-template-columns: 1fr; gap: 3rem; }
+  .mark { width: min(46%, 208px); order: -1; }
+  .showcase {
+    grid-template-columns: 1fr;
+    grid-template-areas: "head" "stage" "body";
+    gap: 0;
   }
-  main { max-width: 34rem; margin: 0 auto; }
+  .sc-head { margin-bottom: 1.8rem; }
+  .stage { margin-bottom: 2rem; }
+  .phone { width: min(72%, 250px); }
+  .ethos-grid { grid-template-columns: 1fr; }
+  .work-head { flex-direction: column; align-items: flex-start; gap: 1rem; }
+}
+@media (max-width: 560px) {
+  body { font-size: 16px; }
+  .ethos-item { padding: 2.1rem 1.4rem 2.4rem; }
+}
 
-  h1 {
-    font-size: 2.4rem;
-    margin: 0 0 6px;
-    letter-spacing: -0.03em;
-    font-weight: 650;
+/* ------------------------------------------------------- reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
-  .tagline { color: var(--muted); margin: 0 0 44px; font-size: 1.05rem; }
-
-  h2 {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    font-weight: 600;
-    margin: 0 0 14px;
-  }
-
-  .app {
-    display: block;
-    background: var(--card);
-    border: 1px solid var(--rule);
-    border-radius: 14px;
-    padding: 20px 22px;
-    text-decoration: none;
-    color: inherit;
-    margin-bottom: 12px;
-    transition: border-color 0.15s ease;
-  }
-  .app:hover { border-color: var(--accent); }
-  .app h3 { margin: 0 0 4px; font-size: 1.15rem; letter-spacing: -0.01em; }
-  .app p { margin: 0; color: var(--muted); font-size: 0.95rem; }
-
-  .links { margin-top: 40px; }
-  .links a { color: var(--accent); }
-  .links p { margin: 0 0 8px; font-size: 0.95rem; }
-
-  footer {
-    margin-top: 56px;
-    padding-top: 20px;
-    border-top: 1px solid var(--rule);
-    color: var(--muted);
-    font-size: 0.85rem;
-  }
+  .js [data-reveal] { opacity: 1; transform: none; }
+  .js .rise > span { transform: none; }
+  .js .fade-in { opacity: 1; transform: none; }
+}
 </style>
 </head>
 <body>
-<main>
 
-<h1>rdotbytes</h1>
-<p class="tagline">Small, private apps for Android.</p>
+<!-- ------------------------------------------------------------------ nav -->
+<nav class="nav" id="nav">
+  <div class="shell">
+    <a class="wordmark" href="#top" aria-label="rdotbytes, home">
+      <svg viewBox="0 0 200 200" aria-hidden="true">
+        <g class="mk-orbit a">
+          <circle cx="100" cy="34" r="9" fill="currentColor"/>
+        </g>
+        <g class="mk-orbit b">
+          <circle cx="157" cy="133" r="9" fill="currentColor"/>
+        </g>
+        <g class="mk-orbit c">
+          <circle cx="43" cy="133" r="9" fill="currentColor"/>
+        </g>
+        <circle cx="100" cy="100" r="16" fill="none" stroke="currentColor" stroke-width="11"/>
+      </svg>
+      rdotbytes
+    </a>
+    <div class="nav-links">
+      <a href="#work">Apps</a>
+      <a href="#next">Games</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
 
-<h2>Apps</h2>
+<!-- ----------------------------------------------------------------- hero -->
+<header class="hero" id="top">
+  <div class="shell">
+    <div>
+      <span class="eyebrow fade-in" style="--i:0"><i class="dot"></i> Independent studio · Android</span>
 
-<a class="app" href="/orbit/privacy.html">
-  <h3>Orbit</h3>
-  <p>A calendar, tasks, notes and habits that live on your phone. No account,
-  no server, nothing sent anywhere.</p>
-</a>
+      <h1>
+        <span class="rise"><span style="--i:0">Small</span></span>
+        <span class="rise"><span style="--i:1">software.</span></span><br>
+        <span class="rise"><span class="soft" style="--i:2">Made</span></span>
+        <span class="rise"><span class="soft" style="--i:3">to</span></span>
+        <span class="rise"><span class="soft" style="--i:4">stay</span></span>
+        <span class="rise"><span class="soft" style="--i:5">yours.</span></span>
+      </h1>
 
-<div class="links">
-  <h2>Legal</h2>
-  <p><a href="/orbit/privacy.html">Orbit privacy policy</a></p>
-</div>
+      <p class="lede fade-in" style="--i:1">
+        rdotbytes builds apps and games for Android. No accounts to make, no
+        servers to trust, nothing sent anywhere. What you write stays on the
+        phone you wrote it on.
+      </p>
 
-<div class="links">
-  <h2>Contact</h2>
-  <p><a href="mailto:rdotbytes@gmail.com">rdotbytes@gmail.com</a></p>
-</div>
+      <div class="hero-actions fade-in" style="--i:2">
+        <a class="btn" href="#work"><span>See the work</span><span class="arw">↓</span></a>
+        <a class="ul" href="#contact">Get in touch</a>
+      </div>
+    </div>
+
+    <div class="mark fade-in" style="--i:3" aria-hidden="true">
+      <div class="glow"></div>
+      <svg viewBox="0 0 200 200">
+        <circle class="mk-ring" cx="100" cy="100" r="86"/>
+        <circle class="mk-ring" cx="100" cy="100" r="62"/>
+        <circle class="mk-ring" cx="100" cy="100" r="38"/>
+
+        <g class="mk-orbit a">
+          <circle cx="100" cy="14" r="6.5" fill="#e07a4a"/>
+          <circle cx="140" cy="26" r="3" fill="#e07a4a" opacity="0.45"/>
+        </g>
+        <g class="mk-orbit b">
+          <circle cx="162" cy="100" r="5.5" fill="#cba53f"/>
+          <circle cx="128" cy="148" r="2.6" fill="#cba53f" opacity="0.4"/>
+        </g>
+        <g class="mk-orbit c">
+          <circle cx="100" cy="138" r="5" fill="#5f9b83"/>
+          <circle cx="66" cy="80" r="2.4" fill="#5f9b83" opacity="0.4"/>
+        </g>
+
+        <g class="mk-core">
+          <circle cx="100" cy="100" r="13" fill="none" stroke="#f5f0ea" stroke-width="2.5"/>
+          <circle cx="100" cy="100" r="3" fill="#f5f0ea"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<!-- ---------------------------------------------------------------- ethos -->
+<section class="ethos" aria-label="How we build">
+  <div class="shell">
+  <div class="ethos-grid">
+    <div class="ethos-item" data-reveal style="--i:0">
+      <span class="no">01</span>
+      <h3>No account</h3>
+      <p>Nothing to sign up for and no email to hand over. Install it, open it,
+         start using it.</p>
+    </div>
+    <div class="ethos-item" data-reveal style="--i:1">
+      <span class="no">02</span>
+      <h3>No server</h3>
+      <p>There is nowhere for your data to go. It is written to your phone and
+         it stays there.</p>
+    </div>
+    <div class="ethos-item" data-reveal style="--i:2">
+      <span class="no">03</span>
+      <h3>No watching</h3>
+      <p>No analytics, no advertising, no third-party kits counting what you
+         tap.</p>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ----------------------------------------------------------------- work -->
+<section id="work">
+  <div class="shell">
+    <div class="work-head">
+      <div>
+        <p class="label" data-reveal>The work</p>
+        <h2 data-reveal style="--i:1">One app out in the world. More on the bench.</h2>
+      </div>
+      <span class="count" data-reveal style="--i:2">01 &nbsp;/&nbsp; 01</span>
+    </div>
+
+    <article class="showcase" data-reveal>
+      <div class="sc-head">
+        <div class="app-id">
+          <img src="assets/orbit/icon.png" alt="Orbit app icon" width="54" height="54">
+          <div>
+            <h3>Orbit</h3>
+            <span class="kind">Android · Free</span>
+          </div>
+        </div>
+
+        <p class="pitch">A calendar, tasks, notes and habits — circling one centre.</p>
+      </div>
+
+      <div class="sc-body">
+        <ul class="feats" id="feats">
+          <li class="feat on">
+            <button type="button" data-shot="calendar">
+              <span class="ft">Calendar</span>
+              <span class="fd">The month at a glance, with what is due sitting
+                right underneath it.</span>
+            </button>
+          </li>
+          <li class="feat">
+            <button type="button" data-shot="tasks">
+              <span class="ft">Tasks</span>
+              <span class="fd">Type it the way you would say it — “ping me
+                tomorrow 8pm”. Reminders and repeats included.</span>
+            </button>
+          </li>
+          <li class="feat">
+            <button type="button" data-shot="notes">
+              <span class="ft">Notes</span>
+              <span class="fd">Headings, checklists and attachments. Or read the
+                words straight off a photograph.</span>
+            </button>
+          </li>
+          <li class="feat">
+            <button type="button" data-shot="habits">
+              <span class="ft">Habits</span>
+              <span class="fd">Tick it done and watch the streak grow. A year at
+                a glance shows what you kept.</span>
+            </button>
+          </li>
+          <li class="feat">
+            <button type="button" data-shot="stats">
+              <span class="ft">Statistics</span>
+              <span class="fd">Everything on your plate, drawn as an orbit by how
+                soon it is due.</span>
+            </button>
+          </li>
+          <li class="feat">
+            <button type="button" data-shot="lock">
+              <span class="ft">Lock</span>
+              <span class="fd">Four digits and it is shut. The PIN never leaves
+                the device either.</span>
+            </button>
+          </li>
+        </ul>
+
+        <!-- When Orbit is live on Google Play, replace this <span> with:
+             <a class="btn" href="https://play.google.com/store/apps/details?id=com.rdotbytes.orbit">
+               <span>Get it on Google Play</span><span class="arw">→</span></a>  -->
+        <span class="store"><i class="dot"></i> Coming to Google Play</span>
+      </div>
+
+      <div class="stage">
+        <div class="phone" id="phone">
+          <div class="screen">
+            <img class="on" src="assets/orbit/calendar.webp" alt="Orbit's calendar screen" width="440" height="740">
+            <img src="assets/orbit/tasks.webp" alt="Orbit's task list" width="440" height="740">
+            <img src="assets/orbit/notes.webp" alt="Editing a note in Orbit" width="440" height="740">
+            <img src="assets/orbit/habits.webp" alt="Habit streaks in Orbit" width="440" height="740">
+            <img src="assets/orbit/stats.webp" alt="Orbit's statistics screen" width="440" height="740">
+            <img src="assets/orbit/lock.webp" alt="Orbit's PIN lock screen" width="440" height="740">
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ---------------------------------------------------------------- games -->
+<section id="next">
+  <div class="shell">
+    <p class="label" data-reveal>What's next</p>
+    <div class="next" data-reveal style="--i:1">
+      <div class="next-inner">
+        <span class="tag">In development</span>
+        <h3>Games, built the same way</h3>
+        <p>Small, offline, and yours once you have it. The first one is being
+           made now — there will be something to look at here before long.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- -------------------------------------------------------------- contact -->
+<section class="contact" id="contact">
+  <div class="shell">
+    <p class="label" data-reveal>Contact</p>
+    <h2 data-reveal style="--i:1">Say hello.</h2>
+    <a class="mail ul" href="mailto:rdotbytes@gmail.com" data-reveal style="--i:2">rdotbytes@gmail.com</a>
+  </div>
+</section>
 
 <footer>
-  &copy; rdotbytes
+  <div class="shell">
+    <span>© <span id="yr">2026</span> rdotbytes</span>
+    <div class="foot-links">
+      <a class="ul" href="/orbit/privacy.html">Orbit privacy policy</a>
+      <a class="ul" href="mailto:rdotbytes@gmail.com">Email</a>
+    </div>
+  </div>
 </footer>
 
-</main>
+<script>
+(function () {
+  var root = document.documentElement;
+  root.classList.add('js');
+
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  /* --- nav gains a background once you leave the hero ------------------- */
+  var nav = document.getElementById('nav');
+  var onScroll = function () {
+    nav.classList.toggle('is-stuck', window.scrollY > 24);
+  };
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* --- reveal on scroll ------------------------------------------------- */
+  var targets = document.querySelectorAll('[data-reveal]');
+  if ('IntersectionObserver' in window && !still) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('seen'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.15 });
+    targets.forEach(function (t) { io.observe(t); });
+  } else {
+    targets.forEach(function (t) { t.classList.add('seen'); });
+  }
+
+  /* --- the feature switcher --------------------------------------------- */
+  var rows  = Array.prototype.slice.call(document.querySelectorAll('#feats .feat'));
+  var shots = Array.prototype.slice.call(document.querySelectorAll('.screen img'));
+  var at = 0, timer = null, held = false;
+
+  function show(i) {
+    at = (i + rows.length) % rows.length;
+    rows.forEach(function (r, n) { r.classList.toggle('on', n === at); });
+    shots.forEach(function (s, n) { s.classList.toggle('on', n === at); });
+  }
+  function play() {
+    if (still) return;
+    stop();
+    timer = setInterval(function () { if (!held) show(at + 1); }, 4200);
+  }
+  function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+  rows.forEach(function (r, i) {
+    var hit = r.querySelector('button');
+    hit.addEventListener('mouseenter', function () { held = true; show(i); });
+    hit.addEventListener('focus',      function () { held = true; show(i); });
+    hit.addEventListener('click',      function () { show(i); });
+    r.addEventListener('mouseleave',   function () { held = false; });
+  });
+
+  /* Only run the carousel while the showcase is actually on screen. */
+  var showcase = document.querySelector('.showcase');
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) {
+      es[0].isIntersecting ? play() : stop();
+    }, { threshold: 0.25 }).observe(showcase);
+  } else { play(); }
+
+  /* --- the phone leans towards the cursor -------------------------------- */
+  var phone = document.getElementById('phone');
+  var stage = document.querySelector('.stage');
+  var fine  = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  if (fine && !still) {
+    var frame = null;
+    stage.addEventListener('pointermove', function (e) {
+      if (frame) return;
+      frame = requestAnimationFrame(function () {
+        frame = null;
+        var b = phone.getBoundingClientRect();
+        var x = (e.clientX - b.left) / b.width  - 0.5;
+        var y = (e.clientY - b.top)  / b.height - 0.5;
+        phone.style.transition = 'transform 0.2s linear';
+        phone.style.transform =
+          'rotateY(' + (x * 13) + 'deg) rotateX(' + (-y * 13) + 'deg) translateZ(24px)';
+      });
+    });
+    stage.addEventListener('pointerleave', function () {
+      phone.style.transition = '';
+      phone.style.transform = '';
+    });
+  }
+})();
+</script>
+
 </body>
 </html>

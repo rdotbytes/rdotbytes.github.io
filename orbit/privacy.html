@@ -3,86 +3,131 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b0a09">
+<link rel="icon" href="../assets/orbit/icon.png">
 <title>Orbit Privacy Policy — rdotbytes</title>
 <meta name="description" content="Orbit does not collect, transmit or store any personal information. Everything you write stays on your phone.">
 <style>
-  :root {
-    --ink: #16161a;
-    --muted: #5b5b66;
-    --rule: #e3e3e8;
-    --page: #ffffff;
-    --accent: #6b4bd6;
-    --note-bg: #f6f4fd;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --ink: #ececf1;
-      --muted: #a2a2ad;
-      --rule: #2c2c33;
-      --page: #131316;
-      --accent: #a68cff;
-      --note-bg: #1c1a26;
-    }
-  }
+@font-face {
+  font-family: 'Outfit';
+  src: url('../assets/fonts/Outfit-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 
-  * { box-sizing: border-box; }
+:root {
+  --bg:        #0b0a09;
+  --ink:       #f5f0ea;
+  --ink-dim:   #a8a099;
+  --ink-faint: #6f6862;
+  --line:      rgba(245, 240, 234, 0.10);
+  --line-soft: rgba(245, 240, 234, 0.055);
+  --ember:     #e07a4a;
+  --display:   'Outfit', 'Segoe UI', system-ui, sans-serif;
+  --text:      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+               Helvetica, Arial, sans-serif;
+  --ease:      cubic-bezier(0.22, 1, 0.36, 1);
+}
 
-  body {
-    background: var(--page);
-    color: var(--ink);
-    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
-    margin: 0;
-    padding: 48px 24px 96px;
-    -webkit-text-size-adjust: 100%;
-  }
-  main { max-width: 40rem; margin: 0 auto; }
+* { box-sizing: border-box; }
 
-  .back {
-    display: inline-block;
-    color: var(--muted);
-    text-decoration: none;
-    font-size: 0.9rem;
-    margin-bottom: 28px;
-  }
-  .back:hover { color: var(--accent); }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 17px/1.7 var(--text);
+  margin: 0;
+  padding: 48px 24px 96px;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
 
-  h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 4px; letter-spacing: -0.02em; }
-  h2 {
-    font-size: 1.15rem;
-    margin: 44px 0 12px;
-    padding-top: 20px;
-    border-top: 1px solid var(--rule);
-    letter-spacing: -0.01em;
-  }
-  .dates { color: var(--muted); font-size: 0.9rem; margin: 0 0 8px; }
-  .lede { font-size: 1.1rem; }
-  p { margin: 0 0 14px; }
-  ul { margin: 0 0 14px; padding-left: 1.25rem; }
-  li { margin-bottom: 8px; }
-  a { color: var(--accent); }
-  strong { font-weight: 650; }
-  code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 0.9em;
-  }
+/* The same warm field as the front page, kept fainter — this is a document. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: -30vmax;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(36vmax 36vmax at 20% 8%, rgba(224, 122, 74, 0.11), transparent 62%),
+    radial-gradient(34vmax 34vmax at 84% 70%, rgba(203, 165, 63, 0.07), transparent 64%);
+}
 
-  .headline {
-    background: var(--note-bg);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 10px 10px 0;
-    padding: 18px 20px;
-    margin: 28px 0 8px;
-  }
-  .headline p { margin: 0; font-size: 1.05rem; }
+main { max-width: 40rem; margin: 0 auto; }
 
-  footer {
-    margin-top: 56px;
-    padding-top: 20px;
-    border-top: 1px solid var(--rule);
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ink-dim);
+  text-decoration: none;
+  font-family: var(--display);
+  font-size: 0.9rem;
+  margin-bottom: 34px;
+  transition: color 0.3s var(--ease);
+}
+.back:hover { color: var(--ink); }
+
+h1 {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(2rem, 5vw, 2.7rem);
+  line-height: 1.06;
+  letter-spacing: -0.032em;
+  margin: 0 0 6px;
+  text-wrap: balance;
+}
+h2 {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+  margin: 48px 0 14px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.dates { color: var(--ink-faint); font-size: 0.88rem; margin: 0 0 10px; }
+.lede { font-size: 1.1rem; color: var(--ink-dim); }
+p { margin: 0 0 15px; color: var(--ink-dim); }
+ul { margin: 0 0 15px; padding-left: 1.25rem; color: var(--ink-dim); }
+li { margin-bottom: 9px; }
+strong { font-weight: 600; color: var(--ink); }
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.88em;
+  background: rgba(245, 240, 234, 0.05);
+  border: 1px solid var(--line-soft);
+  border-radius: 5px;
+  padding: 0.1em 0.35em;
+}
+
+a { color: var(--ember); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+.headline {
+  background: linear-gradient(120deg, rgba(224, 122, 74, 0.09), rgba(224, 122, 74, 0.02));
+  border: 1px solid var(--line-soft);
+  border-left: 2px solid var(--ember);
+  border-radius: 0 16px 16px 0;
+  padding: 20px 22px;
+  margin: 30px 0 10px;
+}
+.headline p { margin: 0; font-size: 1.05rem; color: var(--ink); }
+
+footer {
+  margin-top: 60px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line-soft);
+  color: var(--ink-faint);
+  font-size: 0.88rem;
+}
+footer a { color: var(--ink-faint); }
+footer a:hover { color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: 0.001ms !important; }
+}
 </style>
 </head>
 <body>

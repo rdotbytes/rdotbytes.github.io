@@ -12,6 +12,7 @@ be published, which is why this exists. One site serves all of them:
 ```
 /                      the studio page
 /<app>/privacy.html    that app's privacy policy
+assets/                fonts and app screenshots used by the pages
 ```
 
 Adding a new app means one folder and one link on the front page.
